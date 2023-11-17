@@ -5,6 +5,10 @@ body {
 }
 
 input {
-    height: 30vh;
+    height: 8vh;
     width: 100%;
+}
+
+label {
+    font-size: 40px;
 }
