@@ -3,3 +3,8 @@ body {
     width: 100%;
     background-color: aqua;
 }
+
+input {
+    height: 30vh;
+    width: 100%;
+}
