@@ -28,12 +28,16 @@
                 });
         }
 
-        function recognizeFace(elem) {
+        function recognizeFace() {
             let apiKey = document.getElementById("apiKey").value;
             let formData = new FormData();
-            let photo = elem.files[0];
+            let photoInput = document.getElementById("photoInput");
+            let photo = photoInput.files[0];
 
             formData.append("file", photo);
+
+            // Additional subjects to compare
+            let additionalSubjects = ["Aaron", "Alen", "Melbin"];
 
             fetch('http://64.227.178.8:8000/api/v1/recognition/recognize',
                 {
@@ -45,7 +49,28 @@
                 }
             ).then(r => r.json()).then(
                 function (data) {
-                    document.getElementById("result").innerHTML = JSON.stringify(data);
+                    // Parse the JSON data and extract subject values
+                    let subjectsDetected = data.result.map(face => face.subjects.map(subj => subj.subject)).flat();
+
+                    // Identify subjects present and not present
+                    let subjectsPresent = subjectsDetected.filter(subj => additionalSubjects.includes(subj));
+                    let subjectsNotPresent = additionalSubjects.filter(subj => !subjectsDetected.includes(subj));
+
+                    // Display the results in the HTML
+                    // document.getElementById("result").innerHTML = "<h4>Subjects Detected in Photo:</h4>";
+                    // subjectsDetected.forEach(subject => {
+                    //     document.getElementById("result").innerHTML += "<p>" + subject + "</p>";
+                    // });
+
+                    document.getElementById("result").innerHTML += "<h4>Subjects Present:</h4>";
+                    subjectsPresent.forEach(subject => {
+                        document.getElementById("result").innerHTML += "<p>" + subject + "</p>";
+                    });
+
+                    document.getElementById("result").innerHTML += "<h4>Subjects Not Present:</h4>";
+                    subjectsNotPresent.forEach(subject => {
+                        document.getElementById("result").innerHTML += "<p>" + subject + "</p>";
+                    });
                 })
                 .catch(function (error) {
                     alert('Request failed: ' + JSON.stringify(error));
@@ -59,13 +84,12 @@
 <label for="apiKey">API key:</label><input id="apiKey" value="eb24f49d-e127-436b-a08a-414542202897" />
 <div></div>
 <label for="subject">Subject:</label><input id="subject" />
-<h4>Click to add photo:</h4>
-<input type=file id="newFace" onchange="saveNewImageToFaceCollection(this)" />
-<h4>Click to recognize photo</h4>
-<input type=file id="recognizeFace" onchange="recognizeFace(this)" />
+<h4>Click to add or take a photo:</h4>
+<input type="file" id="photoInput" accept="image/*" onchange="recognizeFace()" capture="environment"/>
+<!-- accept="image/*" ensures that only image files can be selected -->
+<!-- capture="environment" allows the use of the device's camera -->
 <h4>Result:</h4>
-<h4 id="result"></h4>
-
+<div id="result"></div>
 
 </body>
 </html>
