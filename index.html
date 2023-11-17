@@ -1,32 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="light">
 <head>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        .center {
+            text-align: center;
+          }
+    </style>
     <script type="text/javascript">
-        function saveNewImageToFaceCollection(elem) {
-            let subject = encodeURIComponent(document.getElementById("subject").value);
-            let apiKey = document.getElementById("apiKey").value;
-            let formData = new FormData();
-            let photo = elem.files[0];
-
-            formData.append("file", photo);
-
-            fetch('http://64.227.178.8:8000/api/v1/recognition/faces/?subject=' + subject,
-                {
-                    method: "POST",
-                    headers: {
-                        "x-api-key": apiKey
-                    },
-                    body: formData
-                }
-            ).then(r => r.json()).then(
-                function (data) {
-                    console.log('New example was saved', data);
-                })
-                .catch(function (error) {
-                    alert('Request failed: ' + JSON.stringify(error));
-                });
-        }
 
         function recognizeFace(elem) {
             let apiKey = document.getElementById("apiKey").value;
@@ -55,17 +36,15 @@
     <title>test</title>
 </head>
 <body>
-
-<label for="apiKey">API key:</label><input id="apiKey" value="eb24f49d-e127-436b-a08a-414542202897" />
+<main class="container center">
+<h1>API Test</h1>
+<label for="apiKey">API key:</label><input id="apiKey" />
 <div></div>
-<label for="subject">Subject:</label><input id="subject" />
-<h4>Click to add photo:</h4>
-<input type=file id="newFace" onchange="saveNewImageToFaceCollection(this)" />
-<h4>Click to recognize photo</h4>
+<div>Click to recognize photo</div>
 <input type=file id="recognizeFace" onchange="recognizeFace(this)" />
-<h4>Result:</h4>
-<h4 id="result"></h4>
+<div>Result:</div><br>
+<div id="result" style="text-align: justify;"></div>
 
-
+</main>
 </body>
 </html>
